@@ -36,3 +36,12 @@ console.log(greet('world'));
 ## What's next
 
 Add a new file to `lessons/` and run `npm run build` again. Each file becomes its own page.
+
+## Media Test
+
+![Chapter 1 intro](assets/01%20introduction.mp4)
+
+![A descriptive caption](assets/03.png)
+
+![Download the worksheet](assets/05.pdf)
+

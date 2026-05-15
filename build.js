@@ -19,9 +19,15 @@ function parseFrontMatter(src) {
 }
 
 const renderer = new marked.Renderer();
-renderer.image = ({ href, text }) => {
+renderer.image = (href, title, text) => {
+  if (!href) return `<!-- missing asset: ${text} -->`;
+  if (href.startsWith('assets/')) href = '../' + href;
   if (href.endsWith('.mp4')) {
     return `<video controls><source src="${href}" type="video/mp4">${text}</video>`;
+  }
+  if (href.endsWith('.pdf')) {
+    const label = text || 'Download PDF';
+    return `<a class="pdf-download" target="_blank" href="${href}" download>${label}</a>`;
   }
   return `<img src="${href}" alt="${text}">`;
 };

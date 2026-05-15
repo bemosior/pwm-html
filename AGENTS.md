@@ -13,7 +13,7 @@ A minimal static-site LMS. Lessons are markdown files; `build.js` converts them 
 | `build.js` | Build script — reads `lessons/*.md`, writes `dist/*.html` |
 | `template.html` | HTML/CSS shell; placeholders are `{{title}}` and `{{content}}` |
 | `lessons/` | Source markdown files, one per lesson |
-| `assets/` | Images and videos — gitignored, layered in at deploy time |
+| `assets/` | Images, videos, and PDFs — gitignored, layered in at deploy time |
 | `dist/` | Build output — gitignored, never edit directly |
 
 ## Build
@@ -30,7 +30,11 @@ Always run `npm run build` after touching `build.js`, `template.html`, or any fi
 - **Front-matter** at the top of each lesson uses `---` fences. Fields: `title` (string), `description` (string). Both optional.
 - **Lesson filenames** use kebab-case with a numeric prefix: `01-intro.md`, `02-next-topic.md`. The slug becomes the output filename.
 - **No external assets.** All CSS lives inline in `template.html`. Output files must be fully self-contained — no `<link>` or `<script src>` tags pointing outside the file.
-- **Images and video** are referenced in markdown using standard syntax: `![alt](assets/photo.jpg)` for images, `![caption](assets/lesson.mp4)` for video. The build detects `.mp4` by extension and emits a `<video controls>` element. Asset paths pass through unchanged — they resolve correctly when `dist/*.html` and `assets/` are deployed at the same web-root level. Never copy assets into `dist/`.
+- **Images, video, and PDFs** use image syntax in markdown — the build dispatches on file extension:
+  - `![alt](assets/photo.jpg)` → `<img>`
+  - `![caption](assets/lesson.mp4)` → `<video controls>`
+  - `![Download Label](assets/file.pdf)` → styled `<a class="pdf-download" download>` button
+- **Asset paths are rewritten by the build.** `assets/foo.jpg` in markdown becomes `../assets/foo.jpg` in the HTML output, reflecting that `assets/` sits one level above `dist/` in the deployed structure. Never copy assets into `dist/`.
 - **`assets/` is deploy-only.** Files placed there locally are gitignored. Do not commit assets and do not reference them with absolute paths.
 - **One dependency.** `marked` handles markdown parsing. Do not add further runtime dependencies without a strong reason.
 - **ESM only.** `package.json` sets `"type": "module"`. Keep `build.js` using `import`/`export` syntax.
