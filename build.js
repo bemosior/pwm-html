@@ -18,6 +18,15 @@ function parseFrontMatter(src) {
   return { meta, body: match[2] };
 }
 
+const renderer = new marked.Renderer();
+renderer.image = ({ href, text }) => {
+  if (href.endsWith('.mp4')) {
+    return `<video controls><source src="${href}" type="video/mp4">${text}</video>`;
+  }
+  return `<img src="${href}" alt="${text}">`;
+};
+marked.use({ renderer });
+
 mkdirSync(DIST_DIR, { recursive: true });
 
 const files = readdirSync(LESSONS_DIR).filter(f => f.endsWith('.md'));
