@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.125rem;
+      line-height: 1.75;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 3rem 1.5rem;
+    }
+
+    .lesson {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.4rem; margin-top: 2.5rem; margin-bottom: 0.75rem; }
+    h3 { font-size: 1.15rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+
+    p { margin-top: 1rem; }
+    p:first-child { margin-top: 0; }
+
+    ul, ol { margin-top: 1rem; padding-left: 1.75rem; }
+    li + li { margin-top: 0.35rem; }
+
+    code {
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 0.875em;
+      background: #efefeb;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    pre {
+      margin-top: 1.25rem;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 1.25rem 1.5rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.9rem;
+      color: inherit;
+    }
+
+    blockquote {
+      margin-top: 1.25rem;
+      border-left: 3px solid #c8c8c0;
+      padding-left: 1rem;
+      color: #555;
+    }
+
+    .description {
+      margin-top: 0.4rem;
+      color: #666;
+      font-style: italic;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e0e0d8;
+      margin: 2.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <article class="lesson">
+    {{content}}
+  </article>
+</body>
+</html>
