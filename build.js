@@ -41,7 +41,8 @@ for (const file of files) {
   const src = readFileSync(join(LESSONS_DIR, file), 'utf8');
   const { meta, body } = parseFrontMatter(src);
   const title = meta.title ?? basename(file, '.md');
-  const content = marked.parse(body);
+  const content = marked.parse(body.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
+    (_, alt, url) => `![${alt}](${url.replace(/ /g, '%20')})`));
   const html = TEMPLATE
     .replace('{{title}}', title)
     .replace('{{content}}', content);
