@@ -48,7 +48,7 @@ test.describe('Navigation correctness', () => {
   test('active link in sidebar matches current page slug', async ({ page }) => {
     await page.goto(firstLesson);
     const activeHref = await page.locator('.course-nav a.active').getAttribute('href');
-    expect(activeHref).toBe('010.html');
+    expect(activeHref).toBe(firstLesson.split('/').pop());
   });
 
   test('lesson-nav appears at top and bottom of article', async ({ page }) => {
@@ -70,7 +70,7 @@ test.describe('Navigation correctness', () => {
   });
 
   test('middle lesson has both prev and next links', async ({ page }) => {
-    await page.goto(`file://${distDir}/10-welcome/020.html`);
+    await page.goto(lessonUrls[1]);
     await expect(page.locator('.lesson-nav .nav-prev').first()).toBeVisible();
     await expect(page.locator('.lesson-nav .nav-next').first()).toBeVisible();
   });
