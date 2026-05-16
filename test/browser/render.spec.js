@@ -9,6 +9,12 @@ const lessonUrls = manifest.map(p => `file://${distDir}/${p}`);
 const firstLesson = lessonUrls[0];
 const lastLesson = lessonUrls[lessonUrls.length - 1];
 
+// Last lesson before a section boundary — its next link must use ../ (cross-section)
+const crossSectionIdx = manifest.findIndex(
+  (p, i) => i < manifest.length - 1 && p.split('/')[0] !== manifest[i + 1].split('/')[0]
+);
+const lessonBeforeSectionChange = lessonUrls[crossSectionIdx];
+
 test.describe('Layout', () => {
   test('page-layout uses CSS grid', async ({ page }) => {
     await page.goto(firstLesson);
@@ -67,6 +73,25 @@ test.describe('Navigation correctness', () => {
     await page.locator('.course-nav a:not(.active)').first().click();
     const activeHref = await page.locator('.course-nav a.active').getAttribute('href');
     expect(activeHref).toBe(targetHref);
+  });
+});
+
+test.describe('Template injection', () => {
+  test('page title tag matches lesson title (not raw placeholder)', async ({ page }) => {
+    await page.goto(firstLesson);
+    const title = await page.title();
+    const mobileTitle = await page.locator('.mobile-title').textContent();
+    expect(title).toBe(mobileTitle);
+    expect(title).not.toBe('{{title}}');
+    expect(title.length).toBeGreaterThan(0);
+  });
+});
+
+test.describe('Cross-section navigation', () => {
+  test('next link at section boundary uses ../ relative path', async ({ page }) => {
+    await page.goto(lessonBeforeSectionChange);
+    const nextHref = await page.locator('.lesson-nav .nav-next').first().getAttribute('href');
+    expect(nextHref).toMatch(/^\.\.\//);
   });
 });
 
