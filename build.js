@@ -95,6 +95,14 @@ function buildLessonNav(currentSlug) {
   return html;
 }
 
+// Write index.html redirecting to the first lesson
+if (lessons.length > 0) {
+  const first = lessons[0];
+  writeFileSync(join(DIST_DIR, 'index.html'),
+    `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=${first.slug}.html"></head></html>`);
+  console.log(`✓ dist/index.html → ${first.slug}.html`);
+}
+
 // Pass 2: generate HTML for each lesson
 for (const { file, slug, title } of lessons) {
   const src = readFileSync(join(LESSONS_DIR, file), 'utf8');
