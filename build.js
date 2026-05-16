@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync } from 'fs';
 import { join, basename } from 'path';
 import { marked } from 'marked';
 
@@ -34,6 +34,9 @@ renderer.image = (href, title, text) => {
 marked.use({ renderer });
 
 mkdirSync(DIST_DIR, { recursive: true });
+for (const f of readdirSync(DIST_DIR).filter(f => f.endsWith('.html'))) {
+  rmSync(join(DIST_DIR, f));
+}
 
 const files = readdirSync(LESSONS_DIR).filter(f => f.endsWith('.md'));
 
