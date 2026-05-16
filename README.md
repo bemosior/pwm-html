@@ -32,8 +32,9 @@ Run `npm run build` and `dist/my-lesson.html` appears.
 
 The `section` front-matter field assigns a lesson to a named section. The build collects all lessons, groups them by section, and generates a course sidebar and prev/next navigation on each page automatically.
 
-- Sections are ordered alphabetically.
-- Lessons within a section are ordered alphabetically by title.
+- Lesson order follows filename order. Use a numeric prefix (`10-intro.md`, `20-next.md`) to control sequence.
+- Section order is determined by each section's first lesson — whichever section appears earliest in filename order comes first.
+- Use sparse numbering (10, 20, 30…) to leave room for insertions without renaming existing files.
 - Lessons with no `section` field appear at the end of the sidebar with no section heading.
 
 To add a new section, just use a new section name — no other configuration needed.

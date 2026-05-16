@@ -50,15 +50,8 @@ const lessons = files.map(file => {
   return { file, slug, title, section };
 });
 
-// Sort sections alphabetically; within each section sort lessons by title.
-// Lessons with no section go to the end.
-const UNSECTIONED = '￿';
-lessons.sort((a, b) => {
-  const sA = a.section || UNSECTIONED;
-  const sB = b.section || UNSECTIONED;
-  if (sA !== sB) return sA.localeCompare(sB);
-  return a.title.localeCompare(b.title);
-});
+// Order by filename — the numeric prefix controls lesson and section order.
+lessons.sort((a, b) => a.file.localeCompare(b.file));
 
 // Build ordered map: section name → lesson array
 const sections = new Map();
