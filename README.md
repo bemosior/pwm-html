@@ -25,16 +25,22 @@ lessons/
 ```
 
 ```markdown
----
-title: My Lesson
----
-
 # My Lesson
 
 Content goes here.
 ```
 
 Run `npm run build` and `dist/10-getting-started/10-intro.html` appears.
+
+The lesson title is taken from the filename — `10-intro.md` becomes `Intro`. Add a `title:` front-matter field only if you need to override it:
+
+```markdown
+---
+title: A Title the Filename Can't Express
+---
+
+# My Lesson
+```
 
 ## Organizing lessons into sections
 
@@ -51,12 +57,13 @@ To add a new section, just use a new section name — no other configuration nee
 
 Assets (images, video, PDFs) live in the `assets/` folder. They are never committed to the repo — drop them in locally or layer them in at deploy time. The build references them by path without copying.
 
-When deployed, `assets/` sits at the repo root, one level above `dist/`. The build rewrites `assets/` paths to `../assets/` automatically.
+When deployed, `assets/` sits at the repo root, two levels above lesson HTML files. The build rewrites `assets/` paths automatically.
 
 ```
 web-root/
 ├── dist/
-│   └── my-lesson.html
+│   └── 10-getting-started/
+│       └── 10-intro.html
 └── assets/
     ├── photo.jpg
     └── lesson.mp4
@@ -86,6 +93,8 @@ Rendered as a styled download button. Clicking it triggers a browser download.
 
 ## Front-matter fields
 
-| Field | Required | Description |
+Front-matter is optional. Add it only when overriding the default.
+
+| Field | Default | Description |
 |---|---|---|
-| `title` | no | Page title and `<title>` tag. Defaults to the filename. |
+| `title` | filename (prefix stripped) | Page title and `<title>` tag. |

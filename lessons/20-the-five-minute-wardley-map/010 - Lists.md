@@ -1,7 +1,3 @@
----
-title: Lists
----
-
 ![video](assets/03.mp4)
 
 Your template might look something like this:

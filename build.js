@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync } from 'fs';
 import { join, basename } from 'path';
 import { marked } from 'marked';
-import { parseFrontMatter, sectionDisplayName, lessonHref, renderImage, buildSidebar, buildLessonNav } from './lib/build-utils.js';
+import { parseFrontMatter, titleFromFilename, sectionDisplayName, lessonHref, renderImage, buildSidebar, buildLessonNav } from './lib/build-utils.js';
 
 const LESSONS_DIR = 'lessons';
 const DIST_DIR = 'dist';
@@ -40,7 +40,7 @@ for (const dir of sectionDirs) {
     const src = readFileSync(join(LESSONS_DIR, sectionDir, file), 'utf8');
     const { meta } = parseFrontMatter(src);
     const slug = basename(file, '.md');
-    const title = meta.title ?? slug;
+    const title = meta.title ?? titleFromFilename(file);
     return { file, slug, sectionDir, title };
   });
 
@@ -61,7 +61,7 @@ for (const lesson of lessons) {
   const { file, slug, sectionDir } = lesson;
   const src = readFileSync(join(LESSONS_DIR, sectionDir, file), 'utf8');
   const { meta, body } = parseFrontMatter(src);
-  const title = meta.title ?? slug;
+  const title = meta.title ?? titleFromFilename(file);
   const content = marked.parse(body.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
     (_, alt, url) => `![${alt}](${url.replace(/ /g, '%20')})`));
   const sidebar = buildSidebar(lesson, sections);
