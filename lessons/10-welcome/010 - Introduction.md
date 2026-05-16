@@ -1,6 +1,5 @@
 ---
 title: Introduction
-description:
 ---
 
 ![video](assets/01.mp4)

@@ -1,6 +1,5 @@
 ---
 title: Benefits
-description:
 ---
 
 ![video](assets/02.mp4)
