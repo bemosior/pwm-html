@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync } from 'fs';
 import { join, basename } from 'path';
 import { marked } from 'marked';
-import { parseFrontMatter, titleFromFilename, sectionDisplayName, lessonHref, renderImage, buildSidebar, buildLessonNav } from './lib/build-utils.js';
+import { parseFrontMatter, titleFromFilename, sectionDisplayName, sectionSlug, lessonSlug, lessonHref, renderImage, buildSidebar, buildLessonNav } from './lib/build-utils.js';
 
 const LESSONS_DIR = 'lessons';
 const DIST_DIR = 'dist';
@@ -30,18 +30,19 @@ const lessons = [];
 const sections = new Map();
 
 for (const dir of sectionDirs) {
-  const sectionDir = dir.name;
-  const sectionName = sectionDisplayName(sectionDir);
-  const files = readdirSync(join(LESSONS_DIR, sectionDir))
+  const rawSectionDir = dir.name;
+  const sectionDir = sectionSlug(rawSectionDir);
+  const sectionName = sectionDisplayName(rawSectionDir);
+  const files = readdirSync(join(LESSONS_DIR, rawSectionDir))
     .filter(f => f.endsWith('.md'))
     .sort((a, b) => a.localeCompare(b));
 
   const sectionLessons = files.map(file => {
-    const src = readFileSync(join(LESSONS_DIR, sectionDir, file), 'utf8');
+    const src = readFileSync(join(LESSONS_DIR, rawSectionDir, file), 'utf8');
     const { meta } = parseFrontMatter(src);
-    const slug = basename(file, '.md');
+    const slug = lessonSlug(basename(file, '.md'));
     const title = meta.title ?? titleFromFilename(file);
-    return { file, slug, sectionDir, title };
+    return { file, slug, sectionDir, rawSectionDir, title };
   });
 
   sections.set(sectionName, sectionLessons);
@@ -58,8 +59,8 @@ if (lessons.length > 0) {
 
 // Pass 2: render each lesson
 for (const lesson of lessons) {
-  const { file, slug, sectionDir } = lesson;
-  const src = readFileSync(join(LESSONS_DIR, sectionDir, file), 'utf8');
+  const { file, slug, sectionDir, rawSectionDir } = lesson;
+  const src = readFileSync(join(LESSONS_DIR, rawSectionDir, file), 'utf8');
   const { meta, body } = parseFrontMatter(src);
   const title = meta.title ?? titleFromFilename(file);
   const content = marked.parse(body.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,

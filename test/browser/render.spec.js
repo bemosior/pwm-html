@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 const distDir = resolve(fileURLToPath(import.meta.url), '../../../dist');
 const firstLesson = `file://${distDir}/10-welcome/010.html`;
-const lastLesson = `file://${distDir}/20-the-five-minute-wardley-map/010.html`;
+const lastLesson = `file://${distDir}/40-bonus-content/120.html`;
 
 test.describe('Layout', () => {
   test('page-layout uses CSS grid', async ({ page }) => {
