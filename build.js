@@ -37,14 +37,77 @@ mkdirSync(DIST_DIR, { recursive: true });
 
 const files = readdirSync(LESSONS_DIR).filter(f => f.endsWith('.md'));
 
-for (const file of files) {
+// Pass 1: collect metadata for all lessons
+const lessons = files.map(file => {
+  const src = readFileSync(join(LESSONS_DIR, file), 'utf8');
+  const { meta } = parseFrontMatter(src);
+  const slug = basename(file, '.md');
+  const title = meta.title ?? slug;
+  const section = meta.section ?? '';
+  return { file, slug, title, section };
+});
+
+// Sort sections alphabetically; within each section sort lessons by title.
+// Lessons with no section go to the end.
+const UNSECTIONED = '￿';
+lessons.sort((a, b) => {
+  const sA = a.section || UNSECTIONED;
+  const sB = b.section || UNSECTIONED;
+  if (sA !== sB) return sA.localeCompare(sB);
+  return a.title.localeCompare(b.title);
+});
+
+// Build ordered map: section name → lesson array
+const sections = new Map();
+for (const lesson of lessons) {
+  const key = lesson.section;
+  if (!sections.has(key)) sections.set(key, []);
+  sections.get(key).push(lesson);
+}
+
+function buildSidebar(currentSlug) {
+  let html = '<nav class="course-nav">';
+  for (const [section, items] of sections) {
+    if (section) html += `<p class="nav-section">${section}</p>`;
+    html += '<ul>';
+    for (const item of items) {
+      const cls = item.slug === currentSlug ? ' class="active"' : '';
+      html += `<li><a href="${item.slug}.html"${cls}>${item.title}</a></li>`;
+    }
+    html += '</ul>';
+  }
+  html += '</nav>';
+  return html;
+}
+
+function buildLessonNav(currentSlug) {
+  const idx = lessons.findIndex(l => l.slug === currentSlug);
+  const prev = idx > 0 ? lessons[idx - 1] : null;
+  const next = idx < lessons.length - 1 ? lessons[idx + 1] : null;
+  let html = '<nav class="lesson-nav">';
+  html += prev
+    ? `<a href="${prev.slug}.html" class="nav-prev">← ${prev.title}</a>`
+    : '<span></span>';
+  html += next
+    ? `<a href="${next.slug}.html" class="nav-next">${next.title} →</a>`
+    : '<span></span>';
+  html += '</nav>';
+  return html;
+}
+
+// Pass 2: generate HTML for each lesson
+for (const { file, slug, title } of lessons) {
   const src = readFileSync(join(LESSONS_DIR, file), 'utf8');
   const { meta, body } = parseFrontMatter(src);
-  const title = meta.title ?? basename(file, '.md');
+  const lessonTitle = meta.title ?? slug;
   const content = marked.parse(body.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
     (_, alt, url) => `![${alt}](${url.replace(/ /g, '%20')})`));
+  const sidebar = buildSidebar(slug);
+  const lessonNav = buildLessonNav(slug);
   const html = TEMPLATE
-    .replace('{{title}}', title)
+    .replace('{{title}}', lessonTitle)
+    .replace('{{sidebar}}', sidebar)
+    .replaceAll('{{lesson-nav}}', lessonNav)
     .replace('{{content}}', content);
   const outFile = join(DIST_DIR, file.replace(/\.md$/, '.html'));
   writeFileSync(outFile, html);

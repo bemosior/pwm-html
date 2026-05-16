@@ -18,6 +18,7 @@ Create a `.md` file in `lessons/`:
 ```markdown
 ---
 title: My Lesson
+section: Getting Started
 ---
 
 # My Lesson
@@ -26,6 +27,16 @@ Content goes here.
 ```
 
 Run `npm run build` and `dist/my-lesson.html` appears.
+
+## Organizing lessons into sections
+
+The `section` front-matter field assigns a lesson to a named section. The build collects all lessons, groups them by section, and generates a course sidebar and prev/next navigation on each page automatically.
+
+- Sections are ordered alphabetically.
+- Lessons within a section are ordered alphabetically by title.
+- Lessons with no `section` field appear at the end of the sidebar with no section heading.
+
+To add a new section, just use a new section name — no other configuration needed.
 
 ## Embedding assets
 
@@ -70,3 +81,4 @@ Rendered as a styled download button. Clicking it triggers a browser download.
 |---|---|---|
 | `title` | no | Page title and `<title>` tag. Defaults to the filename. |
 | `description` | no | Optional subtitle. |
+| `section` | no | Section name for the course sidebar. Lessons without this appear at the end. |

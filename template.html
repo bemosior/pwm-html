@@ -16,10 +16,56 @@
       padding: 3rem 1.5rem;
     }
 
-    .lesson {
-      max-width: 680px;
+    .page-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 3rem;
+      max-width: 960px;
       margin: 0 auto;
     }
+
+    @media (max-width: 700px) {
+      .page-layout { grid-template-columns: 1fr; gap: 2rem; }
+    }
+
+    /* ── Sidebar ── */
+
+    .course-nav {
+      position: sticky;
+      top: 3rem;
+      align-self: start;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .nav-section {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.68rem;
+      color: #999;
+      margin-top: 1.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-section:first-child { margin-top: 0; }
+
+    .course-nav ul { list-style: none; padding: 0; margin: 0; }
+    .course-nav li + li { margin-top: 0.1rem; }
+
+    .course-nav a {
+      color: #888;
+      text-decoration: none;
+      display: block;
+      padding: 0.15em 0;
+    }
+
+    .course-nav a:hover { color: #1a1a1a; }
+    .course-nav a.active { color: #1a1a1a; font-weight: bold; }
+
+    /* ── Lesson content ── */
+
+    .lesson { max-width: 680px; }
 
     h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.5rem; }
     h2 { font-size: 1.4rem; margin-top: 2.5rem; margin-bottom: 0.75rem; }
@@ -95,18 +141,40 @@
       border-radius: 4px;
     }
 
-    .pdf-download::before {
-      content: '↓';
+    .pdf-download::before { content: '↓'; }
+    .pdf-download:hover { background: #333; }
+
+    /* ── Prev/next navigation ── */
+
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-top: 1px solid #e0e0d8;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 0.8rem;
     }
 
-    .pdf-download:hover {
-      background: #333;
+    .lesson-nav:first-child {
+      border-top: none;
+      border-bottom: 1px solid #e0e0d8;
+      margin-bottom: 1.5rem;
     }
+
+    .lesson-nav:last-child { margin-top: 2.5rem; }
+
+    .lesson-nav a { color: #888; text-decoration: none; }
+    .lesson-nav a:hover { color: #1a1a1a; }
   </style>
 </head>
 <body>
-  <article class="lesson">
-    {{content}}
-  </article>
+  <div class="page-layout">
+    {{sidebar}}
+    <article class="lesson">
+      {{lesson-nav}}
+      {{content}}
+      {{lesson-nav}}
+    </article>
+  </div>
 </body>
 </html>

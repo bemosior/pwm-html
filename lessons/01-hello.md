@@ -1,6 +1,7 @@
 ---
-title: Hello, World
+title: 1. Hello, World
 description: A first lesson to prove the pipeline works.
+section: Getting Started
 ---
 
 # Hello, World

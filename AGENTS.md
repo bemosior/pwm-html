@@ -27,8 +27,9 @@ Always run `npm run build` after touching `build.js`, `template.html`, or any fi
 
 ## Conventions
 
-- **Front-matter** at the top of each lesson uses `---` fences. Fields: `title` (string), `description` (string). Both optional.
+- **Front-matter** at the top of each lesson uses `---` fences. Fields: `title` (string), `description` (string), `section` (string). All optional.
 - **Lesson filenames** use kebab-case with a numeric prefix: `01-intro.md`, `02-next-topic.md`. The slug becomes the output filename.
+- **Course structure** is derived at build time from `section` front-matter. The build does two passes: first it reads all lessons to build the sorted course structure (sections alphabetically, lessons within sections alphabetically by title), then it renders each lesson with a sidebar and prev/next navigation injected via `{{sidebar}}` and `{{lesson-nav}}` placeholders in `template.html`.
 - **No external assets.** All CSS lives inline in `template.html`. Output files must be fully self-contained — no `<link>` or `<script src>` tags pointing outside the file.
 - **Images, video, and PDFs** use image syntax in markdown — the build dispatches on file extension:
   - `![alt](assets/photo.jpg)` → `<img>`
