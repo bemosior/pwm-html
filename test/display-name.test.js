@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { sectionDisplayName } from '../lib/build-utils.js';
 
 test('strips numeric prefix', () => {
-  assert.equal(sectionDisplayName('10-welcome'), 'Welcome');
+  assert.equal(sectionDisplayName('010 - Welcome'), 'Welcome');
 });
 
 test('replaces hyphens with spaces', () => {
@@ -15,7 +15,7 @@ test('title-cases each word', () => {
 });
 
 test('handles multi-word section name', () => {
-  assert.equal(sectionDisplayName('20-the-five-minute-wardley-map'), 'The Five Minute Wardley Map');
+  assert.equal(sectionDisplayName('020 - The Five Minute Wardley Map'), 'The Five Minute Wardley Map');
 });
 
 test('handles section with no numeric prefix', () => {

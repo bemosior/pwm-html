@@ -33,7 +33,6 @@ test('body does not include the front-matter block', () => {
   const src = '---\ntitle: T\n---\nActual body';
   const { body } = parseFrontMatter(src);
   assert.equal(body, 'Actual body');
-  assert.ok(!body.includes('---'));
 });
 
 test('handles CRLF line endings', () => {

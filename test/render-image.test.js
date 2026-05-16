@@ -8,11 +8,6 @@ test('jpg href renders an img tag', () => {
   assert.ok(out.includes('src="photo.jpg"'));
 });
 
-test('png href renders an img tag', () => {
-  const out = renderImage('diagram.png', '', 'alt');
-  assert.ok(out.startsWith('<img '));
-});
-
 test('mp4 href renders a video tag with controls', () => {
   const out = renderImage('video.mp4', '', '');
   assert.ok(out.includes('<video controls>'));

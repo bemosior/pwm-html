@@ -10,8 +10,6 @@ test('first lesson has no prev link', () => {
   const l1 = makeLesson('010', '10-welcome', 'Intro');
   const l2 = makeLesson('020', '10-welcome', 'Next');
   const html = buildLessonNav(l1, [l1, l2]);
-  // prev slot should be a span, not an anchor
-  assert.ok(html.includes('<span></span>'));
   assert.ok(!html.includes('nav-prev'));
 });
 

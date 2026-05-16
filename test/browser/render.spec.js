@@ -1,10 +1,27 @@
 import { test, expect } from '@playwright/test';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 import { fileURLToPath } from 'url';
+import { readdirSync } from 'fs';
 
 const distDir = resolve(fileURLToPath(import.meta.url), '../../../dist');
-const firstLesson = `file://${distDir}/10-welcome/010.html`;
-const lastLesson = `file://${distDir}/40-bonus-content/120.html`;
+
+function orderedLessonUrls() {
+  const sections = readdirSync(distDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const urls = [];
+  for (const section of sections) {
+    readdirSync(join(distDir, section.name))
+      .filter(f => f.endsWith('.html'))
+      .sort()
+      .forEach(f => urls.push(`file://${join(distDir, section.name, f)}`));
+  }
+  return urls;
+}
+
+const lessonUrls = orderedLessonUrls();
+const firstLesson = lessonUrls[0];
+const lastLesson = lessonUrls[lessonUrls.length - 1];
 
 test.describe('Layout', () => {
   test('page-layout uses CSS grid', async ({ page }) => {
@@ -60,11 +77,10 @@ test.describe('Navigation correctness', () => {
 
   test('clicking a sidebar link navigates to that page', async ({ page }) => {
     await page.goto(firstLesson);
-    // click the second lesson in sidebar
+    const targetHref = await page.locator('.course-nav a:not(.active)').first().getAttribute('href');
     await page.locator('.course-nav a:not(.active)').first().click();
-    await expect(page).not.toHaveURL(firstLesson);
-    // landed on a valid lesson page
-    await expect(page.locator('article.lesson')).toBeVisible();
+    const activeHref = await page.locator('.course-nav a.active').getAttribute('href');
+    expect(activeHref).toBe(targetHref);
   });
 });
 
@@ -72,10 +88,9 @@ test.describe('Responsive layout', () => {
   test('at 375px viewport sidebar collapses to single column', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(firstLesson);
-    const columns = await page.locator('.page-layout').evaluate(
-      el => getComputedStyle(el).gridTemplateColumns
+    const display = await page.locator('.page-layout').evaluate(
+      el => getComputedStyle(el).display
     );
-    // Single column: value should not contain two distinct column widths
-    expect(columns).not.toMatch(/\d+px \d+px/);
+    expect(display).toBe('block');
   });
 });

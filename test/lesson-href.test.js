@@ -10,7 +10,3 @@ test('cross-section returns ../toSection/slug.html', () => {
   assert.equal(lessonHref('10-welcome', '20-advanced', '010'), '../20-advanced/010.html');
 });
 
-test('cross-section href has exactly two path segments', () => {
-  const href = lessonHref('10-a', '20-b', 'slug');
-  assert.equal(href.split('/').length, 3); // '../20-b/slug.html'
-});
