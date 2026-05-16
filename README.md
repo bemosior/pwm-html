@@ -89,4 +89,3 @@ Rendered as a styled download button. Clicking it triggers a browser download.
 | Field | Required | Description |
 |---|---|---|
 | `title` | no | Page title and `<title>` tag. Defaults to the filename. |
-| `description` | no | Optional subtitle. |

@@ -27,7 +27,7 @@ Always run `npm run build` after touching `build.js`, `template.html`, or any fi
 
 ## Conventions
 
-- **Front-matter** at the top of each lesson uses `---` fences. Fields: `title` (string), `description` (string). Both optional.
+- **Front-matter** at the top of each lesson uses `---` fences. Fields: `title` (string). Optional.
 - **Lesson filenames** use kebab-case with a numeric prefix: `10-intro.md`, `20-next-topic.md`. The slug becomes the output filename.
 - **Sections are folders** under `lessons/`, also with a numeric prefix: `10-getting-started/`, `20-advanced/`. Section display names are derived by stripping the numeric prefix and converting hyphens to spaces. Output is namespaced: `dist/10-getting-started/10-intro.html`.
 - **Course structure** is built in two passes: first the build reads all section folders and lesson files (both sorted by name) to establish order; then it renders each lesson with a sidebar and prev/next navigation injected via `{{sidebar}}` and `{{lesson-nav}}` placeholders in `template.html`. Cross-section links use relative `../` paths.

@@ -17,10 +17,10 @@ test('parses a single key-value pair', () => {
 });
 
 test('parses multiple key-value pairs', () => {
-  const src = '---\ntitle: Intro\ndescription: Overview\n---\ncontent';
+  const src = '---\ntitle: Intro\nauthor: Alice\n---\ncontent';
   const { meta } = parseFrontMatter(src);
   assert.equal(meta.title, 'Intro');
-  assert.equal(meta.description, 'Overview');
+  assert.equal(meta.author, 'Alice');
 });
 
 test('handles value containing a colon', () => {
