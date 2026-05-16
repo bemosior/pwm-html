@@ -109,6 +109,8 @@
 
       body.nav-open .course-nav { transform: translateX(0); }
       body.nav-open .nav-overlay { display: block; }
+
+      .lesson-nav:first-child .nav-current { display: block; }
     }
 
     /* ── Lesson content ── */
@@ -191,6 +193,7 @@
     .lesson-nav {
       display: flex;
       justify-content: space-between;
+      position: relative;
       padding: 1rem 0;
       border-top: 1px solid #e0e0d8;
       font-family: 'Menlo', 'Consolas', monospace;
@@ -207,6 +210,19 @@
 
     .lesson-nav a { color: #888; text-decoration: none; }
     .lesson-nav a:hover { color: #1a1a1a; }
+
+    .nav-current {
+      display: none;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 40%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #aaa;
+      font-size: 0.75rem;
+    }
   </style>
 </head>
 <body>
