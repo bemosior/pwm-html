@@ -59,14 +59,14 @@
     .course-nav a:hover { color: #1a1a1a; }
     .course-nav a.active { color: #1a1a1a; font-weight: bold; }
 
-    /* ── Mobile nav ── */
+    /* ── Mobile header ── */
+
+    .mobile-header {
+      display: none;
+    }
 
     .nav-toggle {
-      display: none;
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      z-index: 200;
+      flex-shrink: 0;
       background: #1a1a1a;
       color: #fafaf8;
       border: none;
@@ -75,6 +75,20 @@
       font-size: 1.1rem;
       line-height: 1;
       cursor: pointer;
+    }
+
+    .mobile-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 60%;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 0.8rem;
+      color: #1a1a1a;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .nav-overlay {
@@ -86,11 +100,24 @@
     }
 
     @media (max-width: 700px) {
-      body { padding-top: 4rem; }
+      body { padding-top: 3.5rem; }
 
       .page-layout { display: block; }
 
-      .nav-toggle { display: block; }
+      .mobile-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3.5rem;
+        padding: 0 1rem;
+        background: #fafaf8;
+        border-bottom: 1px solid #e0e0d8;
+        z-index: 150;
+      }
 
       .course-nav {
         position: fixed;
@@ -109,8 +136,6 @@
 
       body.nav-open .course-nav { transform: translateX(0); }
       body.nav-open .nav-overlay { display: block; }
-
-      .lesson-nav:first-child .nav-current { display: block; }
     }
 
     /* ── Lesson content ── */
@@ -193,7 +218,6 @@
     .lesson-nav {
       display: flex;
       justify-content: space-between;
-      position: relative;
       padding: 1rem 0;
       border-top: 1px solid #e0e0d8;
       font-family: 'Menlo', 'Consolas', monospace;
@@ -210,23 +234,13 @@
 
     .lesson-nav a { color: #888; text-decoration: none; }
     .lesson-nav a:hover { color: #1a1a1a; }
-
-    .nav-current {
-      display: none;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      max-width: 40%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #aaa;
-      font-size: 0.75rem;
-    }
   </style>
 </head>
 <body>
-  <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+  <header class="mobile-header">
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <span class="mobile-title">{{title}}</span>
+  </header>
   <div class="nav-overlay"></div>
   <div class="page-layout">
     {{sidebar}}

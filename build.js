@@ -67,7 +67,7 @@ for (const lesson of lessons) {
   const sidebar = buildSidebar(lesson, sections);
   const lessonNav = buildLessonNav(lesson, lessons);
   const html = TEMPLATE
-    .replace('{{title}}', title)
+    .replaceAll('{{title}}', title)
     .replace('{{sidebar}}', sidebar)
     .replaceAll('{{lesson-nav}}', lessonNav)
     .replace('{{content}}', content);
