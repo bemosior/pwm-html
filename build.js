@@ -86,10 +86,12 @@ function buildSidebar(currentLesson) {
   let html = '<nav class="course-nav">';
   for (const [sectionName, items] of sections) {
     html += `<p class="nav-section">${sectionName}</p><ul>`;
-    for (const item of items) {
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
       const href = lessonHref(currentLesson.sectionDir, item.sectionDir, item.slug);
       const cls = item === currentLesson ? ' class="active"' : '';
-      html += `<li><a href="${href}"${cls}>${item.title}</a></li>`;
+      const num = String(i + 1).padStart(2, '0');
+      html += `<li><a href="${href}"${cls}>${num}. ${item.title}</a></li>`;
     }
     html += '</ul>';
   }
