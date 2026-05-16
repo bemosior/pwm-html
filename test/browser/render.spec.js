@@ -1,25 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { resolve, join } from 'path';
+import { resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { readdirSync } from 'fs';
+import { readFileSync } from 'fs';
 
 const distDir = resolve(fileURLToPath(import.meta.url), '../../../dist');
-
-function orderedLessonUrls() {
-  const sections = readdirSync(distDir, { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const urls = [];
-  for (const section of sections) {
-    readdirSync(join(distDir, section.name))
-      .filter(f => f.endsWith('.html'))
-      .sort()
-      .forEach(f => urls.push(`file://${join(distDir, section.name, f)}`));
-  }
-  return urls;
-}
-
-const lessonUrls = orderedLessonUrls();
+const manifest = JSON.parse(readFileSync(`${distDir}/lesson-order.json`, 'utf8'));
+const lessonUrls = manifest.map(p => `file://${distDir}/${p}`);
 const firstLesson = lessonUrls[0];
 const lastLesson = lessonUrls[lessonUrls.length - 1];
 

@@ -28,19 +28,30 @@ const sectionDirs = readdirSync(LESSONS_DIR, { withFileTypes: true })
 
 const lessons = [];
 const sections = new Map();
+const seenSectionSlugs = new Set();
 
 for (const dir of sectionDirs) {
   const rawSectionDir = dir.name;
   const sectionDir = sectionSlug(rawSectionDir);
+  if (seenSectionSlugs.has(sectionDir)) {
+    throw new Error(`Section slug collision: "${sectionDir}" (from "${rawSectionDir}")`);
+  }
+  seenSectionSlugs.add(sectionDir);
+
   const sectionName = sectionDisplayName(rawSectionDir);
   const files = readdirSync(join(LESSONS_DIR, rawSectionDir))
     .filter(f => f.endsWith('.md'))
     .sort((a, b) => a.localeCompare(b));
 
+  const seenLessonSlugs = new Set();
   const sectionLessons = files.map(file => {
     const src = readFileSync(join(LESSONS_DIR, rawSectionDir, file), 'utf8');
     const { meta } = parseFrontMatter(src);
     const slug = lessonSlug(basename(file, '.md'));
+    if (seenLessonSlugs.has(slug)) {
+      throw new Error(`Lesson slug collision in "${sectionDir}": "${slug}" (from "${file}")`);
+    }
+    seenLessonSlugs.add(slug);
     const title = meta.title ?? titleFromFilename(file);
     return { file, slug, sectionDir, rawSectionDir, title };
   });
@@ -49,12 +60,14 @@ for (const dir of sectionDirs) {
   lessons.push(...sectionLessons);
 }
 
-// Write index.html redirecting to the first lesson
+// Write index.html redirecting to the first lesson, and a manifest for tests
 if (lessons.length > 0) {
   const first = lessons[0];
   writeFileSync(join(DIST_DIR, 'index.html'),
     `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=${first.sectionDir}/${first.slug}.html"></head></html>`);
   console.log(`✓ dist/index.html → ${first.sectionDir}/${first.slug}.html`);
+  const manifest = lessons.map(l => `${l.sectionDir}/${l.slug}.html`);
+  writeFileSync(join(DIST_DIR, 'lesson-order.json'), JSON.stringify(manifest, null, 2));
 }
 
 // Pass 2: render each lesson
