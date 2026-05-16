@@ -13,12 +13,20 @@ Output goes to `dist/`. Each file is a standalone HTML page with no external dep
 
 ## Writing a lesson
 
-Create a `.md` file in `lessons/`:
+Lessons live inside section folders under `lessons/`. Both the section folder and the lesson file use a numeric prefix to control order:
+
+```
+lessons/
+  10-getting-started/
+    10-intro.md
+    20-next-topic.md
+  20-advanced/
+    10-deep-dive.md
+```
 
 ```markdown
 ---
 title: My Lesson
-section: Getting Started
 ---
 
 # My Lesson
@@ -26,16 +34,16 @@ section: Getting Started
 Content goes here.
 ```
 
-Run `npm run build` and `dist/my-lesson.html` appears.
+Run `npm run build` and `dist/10-getting-started/10-intro.html` appears.
 
 ## Organizing lessons into sections
 
-The `section` front-matter field assigns a lesson to a named section. The build collects all lessons, groups them by section, and generates a course sidebar and prev/next navigation on each page automatically.
+Sections are folders; lessons are files within them. The build generates a course sidebar and prev/next navigation on each page automatically.
 
-- Lesson order follows filename order. Use a numeric prefix (`10-intro.md`, `20-next.md`) to control sequence.
-- Section order is determined by each section's first lesson — whichever section appears earliest in filename order comes first.
+- Section order follows folder name order. Use a numeric prefix (`10-getting-started/`, `20-advanced/`) to control sequence.
+- Lesson order within a section follows filename order. Use a numeric prefix (`10-intro.md`, `20-next.md`).
 - Use sparse numbering (10, 20, 30…) to leave room for insertions without renaming existing files.
-- Lessons with no `section` field appear at the end of the sidebar with no section heading.
+- Section display names are derived from the folder name: the numeric prefix is stripped and hyphens become spaces (`20-the-five-minute-map` → `The Five Minute Map`).
 
 To add a new section, just use a new section name — no other configuration needed.
 
@@ -82,4 +90,3 @@ Rendered as a styled download button. Clicking it triggers a browser download.
 |---|---|---|
 | `title` | no | Page title and `<title>` tag. Defaults to the filename. |
 | `description` | no | Optional subtitle. |
-| `section` | no | Section name for the course sidebar. Lessons without this appear at the end. |

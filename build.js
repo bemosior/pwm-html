@@ -18,10 +18,22 @@ function parseFrontMatter(src) {
   return { meta, body: match[2] };
 }
 
+function sectionDisplayName(dirName) {
+  return dirName
+    .replace(/^\d+-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function lessonHref(fromSectionDir, toSectionDir, toSlug) {
+  if (fromSectionDir === toSectionDir) return `${toSlug}.html`;
+  return `../${toSectionDir}/${toSlug}.html`;
+}
+
 const renderer = new marked.Renderer();
 renderer.image = (href, title, text) => {
   if (!href) return `<!-- missing asset: ${text} -->`;
-  if (href.startsWith('assets/')) href = '../' + href;
+  if (href.startsWith('assets/')) href = '../../' + href;
   if (href.endsWith('.mp4')) {
     return `<video controls><source src="${href}" type="video/mp4">${text}</video>`;
   }
@@ -33,42 +45,51 @@ renderer.image = (href, title, text) => {
 };
 marked.use({ renderer });
 
+// Clean dist
 mkdirSync(DIST_DIR, { recursive: true });
-for (const f of readdirSync(DIST_DIR).filter(f => f.endsWith('.html'))) {
-  rmSync(join(DIST_DIR, f));
+for (const entry of readdirSync(DIST_DIR, { withFileTypes: true })) {
+  if (entry.isDirectory()) {
+    rmSync(join(DIST_DIR, entry.name), { recursive: true });
+  } else if (entry.name.endsWith('.html')) {
+    rmSync(join(DIST_DIR, entry.name));
+  }
 }
 
-const files = readdirSync(LESSONS_DIR).filter(f => f.endsWith('.md'));
+// Pass 1: collect course structure from two-level directory tree
+const sectionDirs = readdirSync(LESSONS_DIR, { withFileTypes: true })
+  .filter(d => d.isDirectory())
+  .sort((a, b) => a.name.localeCompare(b.name));
 
-// Pass 1: collect metadata for all lessons
-const lessons = files.map(file => {
-  const src = readFileSync(join(LESSONS_DIR, file), 'utf8');
-  const { meta } = parseFrontMatter(src);
-  const slug = basename(file, '.md');
-  const title = meta.title ?? slug;
-  const section = meta.section ?? '';
-  return { file, slug, title, section };
-});
-
-// Order by filename — the numeric prefix controls lesson and section order.
-lessons.sort((a, b) => a.file.localeCompare(b.file));
-
-// Build ordered map: section name → lesson array
+const lessons = [];
 const sections = new Map();
-for (const lesson of lessons) {
-  const key = lesson.section;
-  if (!sections.has(key)) sections.set(key, []);
-  sections.get(key).push(lesson);
+
+for (const dir of sectionDirs) {
+  const sectionDir = dir.name;
+  const sectionName = sectionDisplayName(sectionDir);
+  const files = readdirSync(join(LESSONS_DIR, sectionDir))
+    .filter(f => f.endsWith('.md'))
+    .sort((a, b) => a.localeCompare(b));
+
+  const sectionLessons = files.map(file => {
+    const src = readFileSync(join(LESSONS_DIR, sectionDir, file), 'utf8');
+    const { meta } = parseFrontMatter(src);
+    const slug = basename(file, '.md');
+    const title = meta.title ?? slug;
+    return { file, slug, sectionDir, title };
+  });
+
+  sections.set(sectionName, sectionLessons);
+  lessons.push(...sectionLessons);
 }
 
-function buildSidebar(currentSlug) {
+function buildSidebar(currentLesson) {
   let html = '<nav class="course-nav">';
-  for (const [section, items] of sections) {
-    if (section) html += `<p class="nav-section">${section}</p>`;
-    html += '<ul>';
+  for (const [sectionName, items] of sections) {
+    html += `<p class="nav-section">${sectionName}</p><ul>`;
     for (const item of items) {
-      const cls = item.slug === currentSlug ? ' class="active"' : '';
-      html += `<li><a href="${item.slug}.html"${cls}>${item.title}</a></li>`;
+      const href = lessonHref(currentLesson.sectionDir, item.sectionDir, item.slug);
+      const cls = item === currentLesson ? ' class="active"' : '';
+      html += `<li><a href="${href}"${cls}>${item.title}</a></li>`;
     }
     html += '</ul>';
   }
@@ -76,16 +97,16 @@ function buildSidebar(currentSlug) {
   return html;
 }
 
-function buildLessonNav(currentSlug) {
-  const idx = lessons.findIndex(l => l.slug === currentSlug);
+function buildLessonNav(currentLesson) {
+  const idx = lessons.indexOf(currentLesson);
   const prev = idx > 0 ? lessons[idx - 1] : null;
   const next = idx < lessons.length - 1 ? lessons[idx + 1] : null;
   let html = '<nav class="lesson-nav">';
   html += prev
-    ? `<a href="${prev.slug}.html" class="nav-prev">← ${prev.title}</a>`
+    ? `<a href="${lessonHref(currentLesson.sectionDir, prev.sectionDir, prev.slug)}" class="nav-prev">← ${prev.title}</a>`
     : '<span></span>';
   html += next
-    ? `<a href="${next.slug}.html" class="nav-next">${next.title} →</a>`
+    ? `<a href="${lessonHref(currentLesson.sectionDir, next.sectionDir, next.slug)}" class="nav-next">${next.title} →</a>`
     : '<span></span>';
   html += '</nav>';
   return html;
@@ -95,25 +116,28 @@ function buildLessonNav(currentSlug) {
 if (lessons.length > 0) {
   const first = lessons[0];
   writeFileSync(join(DIST_DIR, 'index.html'),
-    `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=${first.slug}.html"></head></html>`);
-  console.log(`✓ dist/index.html → ${first.slug}.html`);
+    `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=${first.sectionDir}/${first.slug}.html"></head></html>`);
+  console.log(`✓ dist/index.html → ${first.sectionDir}/${first.slug}.html`);
 }
 
-// Pass 2: generate HTML for each lesson
-for (const { file, slug, title } of lessons) {
-  const src = readFileSync(join(LESSONS_DIR, file), 'utf8');
+// Pass 2: render each lesson
+for (const lesson of lessons) {
+  const { file, slug, sectionDir } = lesson;
+  const src = readFileSync(join(LESSONS_DIR, sectionDir, file), 'utf8');
   const { meta, body } = parseFrontMatter(src);
-  const lessonTitle = meta.title ?? slug;
+  const title = meta.title ?? slug;
   const content = marked.parse(body.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
     (_, alt, url) => `![${alt}](${url.replace(/ /g, '%20')})`));
-  const sidebar = buildSidebar(slug);
-  const lessonNav = buildLessonNav(slug);
+  const sidebar = buildSidebar(lesson);
+  const lessonNav = buildLessonNav(lesson);
   const html = TEMPLATE
-    .replace('{{title}}', lessonTitle)
+    .replace('{{title}}', title)
     .replace('{{sidebar}}', sidebar)
     .replaceAll('{{lesson-nav}}', lessonNav)
     .replace('{{content}}', content);
-  const outFile = join(DIST_DIR, file.replace(/\.md$/, '.html'));
+  const outDir = join(DIST_DIR, sectionDir);
+  mkdirSync(outDir, { recursive: true });
+  const outFile = join(outDir, `${slug}.html`);
   writeFileSync(outFile, html);
   console.log(`✓ ${outFile}`);
 }

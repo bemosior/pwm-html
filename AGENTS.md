@@ -27,9 +27,10 @@ Always run `npm run build` after touching `build.js`, `template.html`, or any fi
 
 ## Conventions
 
-- **Front-matter** at the top of each lesson uses `---` fences. Fields: `title` (string), `description` (string), `section` (string). All optional.
-- **Lesson filenames** use kebab-case with a numeric prefix: `01-intro.md`, `02-next-topic.md`. The slug becomes the output filename.
-- **Course structure** is derived at build time from `section` front-matter. The build does two passes: first it reads all lessons to build the course structure (ordered by filename), then it renders each lesson with a sidebar and prev/next navigation injected via `{{sidebar}}` and `{{lesson-nav}}` placeholders in `template.html`. Section order is determined by each section's first lesson in filename order — no separate section ordering config exists.
+- **Front-matter** at the top of each lesson uses `---` fences. Fields: `title` (string), `description` (string). Both optional.
+- **Lesson filenames** use kebab-case with a numeric prefix: `10-intro.md`, `20-next-topic.md`. The slug becomes the output filename.
+- **Sections are folders** under `lessons/`, also with a numeric prefix: `10-getting-started/`, `20-advanced/`. Section display names are derived by stripping the numeric prefix and converting hyphens to spaces. Output is namespaced: `dist/10-getting-started/10-intro.html`.
+- **Course structure** is built in two passes: first the build reads all section folders and lesson files (both sorted by name) to establish order; then it renders each lesson with a sidebar and prev/next navigation injected via `{{sidebar}}` and `{{lesson-nav}}` placeholders in `template.html`. Cross-section links use relative `../` paths.
 - **No external assets.** All CSS lives inline in `template.html`. Output files must be fully self-contained — no `<link>` or `<script src>` tags pointing outside the file.
 - **Images, video, and PDFs** use image syntax in markdown — the build dispatches on file extension:
   - `![alt](assets/photo.jpg)` → `<img>`
