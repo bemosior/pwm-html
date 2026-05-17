@@ -9,6 +9,10 @@ const TEMPLATE = readFileSync('template.html', 'utf8');
 
 const renderer = new marked.Renderer();
 renderer.image = renderImage;
+renderer.link = (href, title, text) => {
+  const titleAttr = title ? ` title="${title}"` : '';
+  return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
+};
 marked.use({ renderer });
 
 // Clean dist
