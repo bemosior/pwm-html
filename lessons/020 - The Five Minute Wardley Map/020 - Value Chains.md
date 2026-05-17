@@ -1,5 +1,5 @@
-![video](assets/04.mp4)
+![video](assets/040 - Value Chains.mp4)
 
 Your template might look something like this:
 
-![example](assets/04.png)
+![example](assets/040 - Value Chains.png)

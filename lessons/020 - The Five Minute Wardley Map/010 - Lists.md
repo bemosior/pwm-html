@@ -1,8 +1,8 @@
-![video](assets/03.mp4)
+![video](assets/030 - Lists.mp4)
 
-![Get Template](assets/03 Template.pdf)
+![Get Template](assets/Template.pdf)
 
 
 Your template might look something like this:
 
-![example](assets/03.png)
+![example](assets/030 - Lists.png)

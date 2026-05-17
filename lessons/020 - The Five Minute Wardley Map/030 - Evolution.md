@@ -1,7 +1,5 @@
-![video](assets/05.mp4)
+![video](assets/050 - Evolution.mp4)
 
-Your template might look something like this:
+![Evolution](assets/Evolution.pdf)
 
-![example](assets/05.pdf)
-
-**Congratulations! You have made a Wardley Map!**
+**Once you finish this lesson, you'll officially have your first Wardley Map!**
