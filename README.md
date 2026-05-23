@@ -83,6 +83,14 @@ web-root/
 
 Rendered as a native `<video controls>` element. MP4 only.
 
+**Prepare videos for web delivery before uploading.** By default, ffmpeg writes the `moov` atom (metadata the browser needs to initialize the player) at the end of the file. The browser has to make a second range request to find it, causing a multi-second delay before the player appears. Fix this with the `faststart` flag, which moves the `moov` atom to the beginning:
+
+```sh
+ffmpeg -i input.mp4 -c copy -movflags faststart output.mp4
+```
+
+`-c copy` re-muxes without re-encoding — it's fast and lossless. Run this on every video before uploading to `assets/`.
+
 ### PDF download
 
 ```markdown
