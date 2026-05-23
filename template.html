@@ -61,6 +61,35 @@
     .course-nav a:hover { color: #1a1a1a; }
     .course-nav a.active { color: #1a1a1a; font-weight: bold; }
 
+    .course-nav::before,
+    .course-nav::after {
+      content: '';
+      display: block;
+      position: sticky;
+      left: 0;
+      right: 0;
+      height: 2.5rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 1;
+    }
+
+    .course-nav::before {
+      top: 0;
+      margin-bottom: -2.5rem;
+      background: linear-gradient(to bottom, #fafaf8, transparent);
+    }
+
+    .course-nav::after {
+      bottom: 0;
+      margin-top: -2.5rem;
+      background: linear-gradient(to top, #fafaf8, transparent);
+    }
+
+    .course-nav.fade-top::before { opacity: 1; }
+    .course-nav.fade-bottom::after { opacity: 1; }
+
     /* ── Mobile header ── */
 
     .mobile-header {
@@ -260,8 +289,16 @@
     overlay.addEventListener('click', close);
     document.querySelectorAll('.course-nav a').forEach(a => a.addEventListener('click', close));
 
+    const nav = document.querySelector('.course-nav');
+    function updateNavFade() {
+      nav.classList.toggle('fade-top', nav.scrollTop > 0);
+      nav.classList.toggle('fade-bottom', nav.scrollTop + nav.clientHeight < nav.scrollHeight - 1);
+    }
+    nav.addEventListener('scroll', updateNavFade);
+
     const activeLink = document.querySelector('.course-nav a.active');
     if (activeLink) activeLink.scrollIntoView({ block: 'center' });
+    updateNavFade();
   </script>
 </body>
 </html>
