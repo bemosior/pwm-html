@@ -95,21 +95,28 @@ Rendered as a styled download button. Clicking it triggers a browser download.
 
 ### One-time server setup
 
-**Install Caddy:**
+**Install Caddy and Node.js:**
 
 ```sh
-sudo apt update && sudo apt install caddy
+sudo apt update && sudo apt install caddy nodejs npm
 ```
 
-**Create a deploy user:**
+**Create a deploy user and clone the repo:**
 
 ```sh
-sudo useradd --system --no-create-home --shell /usr/sbin/nologin pwm-deploy
-sudo chown -R pwm-deploy:pwm-deploy /var/www/pwm
+sudo useradd --home-dir /var/www/pwm --shell /bin/bash pwm-deploy
+sudo -u pwm-deploy git clone <repo-url> /var/www/pwm
+sudo -u pwm-deploy mkdir -p /var/www/pwm/assets
 sudo chmod -R 755 /var/www/pwm
 ```
 
 The `caddy` service user only needs read access, which `755`/`644` provides.
+
+**Install dependencies on the server:**
+
+```sh
+sudo -u pwm-deploy bash -c 'cd /var/www/pwm && npm install'
+```
 
 **Configure Caddy** (`/etc/caddy/Caddyfile`):
 
@@ -132,18 +139,17 @@ sudo systemctl reload caddy
 
 ### Deploying
 
-Build locally, then push `dist/` and `assets/` to the server as the deploy user:
+Assets are not in the repo and must be pushed separately. The build runs on the server.
 
 ```sh
-npm run build
+# Push any new or changed assets (first time: remove --ignore-existing)
+rsync -av --ignore-existing assets/ pwm-deploy@yourserver:/var/www/pwm/assets/
 
-rsync -av --delete dist/ deploy@yourserver:/var/www/pwm/dist/
-rsync -av --ignore-existing assets/ deploy@yourserver:/var/www/pwm/assets/
+# Pull latest code and rebuild on the server
+ssh pwm-deploy@yourserver 'cd /var/www/pwm && git pull && npm run build'
 ```
 
-`--delete` on `dist/` removes stale lesson files when you rename or delete lessons. `--ignore-existing` on `assets/` avoids re-uploading large files that haven't changed — use `--checksum` instead if you need to force-update a specific asset in place.
-
-To allow the deploy user to accept rsync over SSH without a password, add your public key to `/home/deploy/.ssh/authorized_keys` (or configure it via your CI system's secrets).
+`--ignore-existing` avoids re-uploading large files that haven't changed. Use `--checksum` instead if you need to force-update a specific asset in place.
 
 ## Front-matter fields
 
