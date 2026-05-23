@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync } from 'fs'
 import { join, basename } from 'path';
 import { marked } from 'marked';
 import { parseFrontMatter, titleFromFilename, sectionDisplayName, sectionSlug, lessonSlug, lessonHref, renderImage, buildSidebar, buildLessonNav } from './lib/build-utils.js';
+import { generateThumbnails } from './lib/thumbnails.js';
 
 const LESSONS_DIR = 'lessons';
 const DIST_DIR = 'dist';
@@ -24,6 +25,8 @@ for (const entry of readdirSync(DIST_DIR, { withFileTypes: true })) {
     rmSync(join(DIST_DIR, entry.name));
   }
 }
+
+generateThumbnails('assets');
 
 // Pass 1: collect course structure from two-level directory tree
 const sectionDirs = readdirSync(LESSONS_DIR, { withFileTypes: true })

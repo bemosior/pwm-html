@@ -83,6 +83,8 @@ web-root/
 
 Rendered as a native `<video controls>` element. MP4 only.
 
+**ffmpeg is required** for thumbnail generation (`brew install ffmpeg` or `sudo apt install ffmpeg`). The build skips thumbnails with a warning if ffmpeg is not found.
+
 **Prepare videos for web delivery before uploading.** By default, ffmpeg writes the `moov` atom (metadata the browser needs to initialize the player) at the end of the file. The browser has to make a second range request to find it, causing a multi-second delay before the player appears. Fix this with the `faststart` flag, which moves the `moov` atom to the beginning:
 
 ```sh

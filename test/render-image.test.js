@@ -10,7 +10,7 @@ test('jpg href renders an img tag', () => {
 
 test('mp4 href renders a video tag with controls', () => {
   const out = renderImage('video.mp4', '', '');
-  assert.ok(out.includes('<video controls>'));
+  assert.ok(out.includes('<video ') && out.includes('controls'));
 });
 
 test('mp4 video tag includes source child element', () => {
@@ -57,6 +57,16 @@ test('null href returns an HTML comment', () => {
 test('assets/ rewrite works for mp4', () => {
   const out = renderImage('assets/clip.mp4', '', '');
   assert.ok(out.includes('src="../../assets/clip.mp4"'));
+});
+
+test('mp4 with assets/ prefix includes poster attribute', () => {
+  const out = renderImage('assets/clip.mp4', '', '');
+  assert.ok(out.includes('poster="../../assets/clip.jpg"'));
+});
+
+test('mp4 without assets/ prefix has no poster attribute', () => {
+  const out = renderImage('clip.mp4', '', '');
+  assert.ok(!out.includes('poster='));
 });
 
 test('assets/ rewrite works for pdf', () => {
