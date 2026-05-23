@@ -91,6 +91,60 @@ Rendered as a native `<video controls>` element. MP4 only.
 
 Rendered as a styled download button. Clicking it triggers a browser download.
 
+## Deploying to Debian with Caddy
+
+### One-time server setup
+
+**Install Caddy:**
+
+```sh
+sudo apt update && sudo apt install caddy
+```
+
+**Create a deploy user:**
+
+```sh
+sudo useradd --system --no-create-home --shell /usr/sbin/nologin pwm-deploy
+sudo chown -R pwm-deploy:pwm-deploy /var/www/pwm
+sudo chmod -R 755 /var/www/pwm
+```
+
+The `caddy` service user only needs read access, which `755`/`644` provides.
+
+**Configure Caddy** (`/etc/caddy/Caddyfile`):
+
+```
+yourdomain.com {
+    handle_path /assets/* {
+        root * /var/www/pwm/assets
+        file_server
+    }
+    handle {
+        root * /var/www/pwm/dist
+        file_server
+    }
+}
+```
+
+```sh
+sudo systemctl reload caddy
+```
+
+### Deploying
+
+Build locally, then push `dist/` and `assets/` to the server as the deploy user:
+
+```sh
+npm run build
+
+rsync -av --delete dist/ deploy@yourserver:/var/www/pwm/dist/
+rsync -av --ignore-existing assets/ deploy@yourserver:/var/www/pwm/assets/
+```
+
+`--delete` on `dist/` removes stale lesson files when you rename or delete lessons. `--ignore-existing` on `assets/` avoids re-uploading large files that haven't changed — use `--checksum` instead if you need to force-update a specific asset in place.
+
+To allow the deploy user to accept rsync over SSH without a password, add your public key to `/home/deploy/.ssh/authorized_keys` (or configure it via your CI system's secrets).
+
 ## Front-matter fields
 
 Front-matter is optional. Add it only when overriding the default.
