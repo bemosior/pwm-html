@@ -104,7 +104,7 @@ sudo apt update && sudo apt install caddy nodejs npm
 **Create a deploy user and clone the repo:**
 
 ```sh
-sudo useradd --home-dir /var/www/pwm --shell /bin/bash pwm-deploy
+sudo useradd --create-home --shell /bin/bash pwm-deploy
 sudo -u pwm-deploy git clone <repo-url> /var/www/pwm
 sudo -u pwm-deploy mkdir -p /var/www/pwm/assets
 sudo chmod -R 755 /var/www/pwm
