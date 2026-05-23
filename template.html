@@ -30,6 +30,8 @@
       position: sticky;
       top: 3rem;
       align-self: start;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
       font-family: 'Menlo', 'Consolas', monospace;
       font-size: 0.8rem;
       line-height: 1.6;
@@ -257,6 +259,9 @@
     toggle.addEventListener('click', () => document.body.classList.toggle('nav-open'));
     overlay.addEventListener('click', close);
     document.querySelectorAll('.course-nav a').forEach(a => a.addEventListener('click', close));
+
+    const activeLink = document.querySelector('.course-nav a.active');
+    if (activeLink) activeLink.scrollIntoView({ block: 'center' });
   </script>
 </body>
 </html>
