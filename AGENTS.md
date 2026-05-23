@@ -11,7 +11,7 @@ A minimal static-site LMS. Lessons are markdown files; `build.js` converts them 
 | File | Role |
 |---|---|
 | `build.js` | Build script — reads `lessons/*.md`, writes `dist/*.html` |
-| `template.html` | HTML/CSS shell; placeholders are `{{title}}` and `{{content}}` |
+| `template.html` | HTML/CSS shell; placeholders: `{{title}}`, `{{sidebar}}`, `{{lesson-nav}}`, `{{content}}` |
 | `lessons/` | Source markdown files, one per lesson |
 | `assets/` | Images, videos, and PDFs — gitignored, layered in at deploy time |
 | `dist/` | Build output — gitignored, never edit directly |

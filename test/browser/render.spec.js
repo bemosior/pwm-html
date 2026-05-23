@@ -95,6 +95,34 @@ test.describe('Cross-section navigation', () => {
   });
 });
 
+test.describe('Sidebar scroll behavior', () => {
+  test('sidebar nav has overflow-y auto', async ({ page }) => {
+    await page.goto(firstLesson);
+    const overflowY = await page.locator('.course-nav').evaluate(
+      el => getComputedStyle(el).overflowY
+    );
+    expect(overflowY).toBe('auto');
+  });
+
+  test('sidebar shows bottom fade when nav content overflows', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 300 });
+    await page.goto(firstLesson);
+    const hasFadeBottom = await page.locator('.course-nav').evaluate(
+      el => el.classList.contains('fade-bottom')
+    );
+    expect(hasFadeBottom).toBe(true);
+  });
+
+  test('sidebar shows no top fade when scrolled to top', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 300 });
+    await page.goto(firstLesson);
+    const hasFadeTop = await page.locator('.course-nav').evaluate(
+      el => el.classList.contains('fade-top')
+    );
+    expect(hasFadeTop).toBe(false);
+  });
+});
+
 test.describe('Responsive layout', () => {
   test('at 375px viewport sidebar collapses to single column', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
