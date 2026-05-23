@@ -1,0 +1,1 @@
+![video](assets/600 - Challenge Assumptions.mp4)

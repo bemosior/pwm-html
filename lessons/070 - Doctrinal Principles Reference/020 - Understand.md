@@ -1,0 +1,1 @@
+![video](assets/520 - Understand What Is Being Considered.mp4)
