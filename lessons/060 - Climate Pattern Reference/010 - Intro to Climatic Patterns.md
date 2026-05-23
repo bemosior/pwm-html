@@ -1,0 +1,1 @@
+![video](assets/310 - Intro to Climatic Patterns.mp4)

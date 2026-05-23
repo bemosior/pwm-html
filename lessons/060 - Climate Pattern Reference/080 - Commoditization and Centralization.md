@@ -1,0 +1,1 @@
+![video](assets/390 - Commoditization Centralization.mp4)
