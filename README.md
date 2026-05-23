@@ -128,6 +128,7 @@ yourdomain.com {
     handle_path /assets/* {
         root * /var/www/pwm/assets
         file_server
+        header Cache-Control "public, max-age=31536000, immutable"
     }
     handle {
         root * /var/www/pwm/dist
