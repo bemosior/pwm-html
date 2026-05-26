@@ -8,9 +8,11 @@ test('jpg href renders an img tag', () => {
   assert.ok(out.includes('src="photo.jpg"'));
 });
 
-test('mp4 href renders a video tag with controls', () => {
+test('mp4 href renders a media-controller with a video element', () => {
   const out = renderImage('video.mp4', '', '');
-  assert.ok(out.includes('<video ') && out.includes('controls'));
+  assert.ok(out.startsWith('<media-controller>'));
+  assert.ok(out.includes('<video slot="media"'));
+  assert.ok(out.includes('<media-control-bar>'));
 });
 
 test('mp4 video tag includes source child element', () => {
