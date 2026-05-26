@@ -220,11 +220,43 @@
       margin: 2.5rem 0;
     }
 
-    img, video {
+    img {
       display: block;
       max-width: 100%;
       margin-top: 1.25rem;
       border-radius: 4px;
+    }
+
+    /* ── Video player (Media Chrome) ── */
+
+    media-controller {
+      display: block;
+      width: 100%;
+      margin-top: 1.25rem;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #000;
+      --media-primary-color: #fafaf8;
+      --media-secondary-color: rgba(20, 20, 20, 0.82);
+      --media-range-track-color: rgba(250, 250, 248, 0.22);
+      --media-font-family: 'Menlo', 'Consolas', monospace;
+      --media-font-size: 0.72rem;
+      --media-font-weight: normal;
+    }
+
+    media-controller video {
+      display: block;
+      width: 100%;
+      margin-top: 0;
+      border-radius: 0;
+    }
+
+    media-time-range {
+      flex: 1;
+    }
+
+    @media (max-width: 700px) {
+      media-volume-range { display: none; }
     }
 
     .pdf-download {
@@ -266,6 +298,7 @@
     .lesson-nav a { color: #888; text-decoration: none; }
     .lesson-nav a:hover { color: #1a1a1a; }
   </style>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/dist/index.js"></script>
 </head>
 <body>
   <header class="mobile-header">
