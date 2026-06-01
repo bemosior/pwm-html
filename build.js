@@ -86,11 +86,13 @@ for (const lesson of lessons) {
   const content = marked.parse(body.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
     (_, alt, url) => `![${alt}](${url.replace(/ /g, '%20')})`));
   const sidebar = buildSidebar(lesson, sections);
-  const lessonNav = buildLessonNav(lesson, lessons);
+  const lessonNavTop = buildLessonNav(lesson, lessons, { showPrev: true, showNext: false });
+  const lessonNavBottom = buildLessonNav(lesson, lessons, { showPrev: false, showNext: true });
   const html = TEMPLATE
     .replaceAll('{{title}}', title)
     .replace('{{sidebar}}', sidebar)
-    .replaceAll('{{lesson-nav}}', lessonNav)
+    .replace('{{lesson-nav-top}}', lessonNavTop)
+    .replace('{{lesson-nav-bottom}}', lessonNavBottom)
     .replace('{{content}}', content);
   const outDir = join(DIST_DIR, sectionDir);
   mkdirSync(outDir, { recursive: true });
