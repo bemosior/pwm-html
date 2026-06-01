@@ -47,7 +47,7 @@ test('prev link contains left arrow', () => {
   const l1 = makeLesson('first', 'welcome', 'First');
   const l2 = makeLesson('second', 'welcome', 'Second');
   const html = buildLessonNav(l2, [l1, l2]);
-  assert.ok(html.includes('← First'));
+  assert.ok(html.includes('← Previous: First'));
 });
 
 test('next link contains right arrow', () => {
