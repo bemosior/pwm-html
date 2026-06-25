@@ -3,13 +3,16 @@ import { join, basename } from 'path';
 import { marked } from 'marked';
 import { parseFrontMatter, titleFromFilename, sectionDisplayName, sectionSlug, lessonSlug, lessonHref, renderImage, buildSidebar, buildLessonNav } from './lib/build-utils.js';
 import { generateThumbnails } from './lib/thumbnails.js';
+import { loadDurations } from './lib/durations.js';
 
 const LESSONS_DIR = 'lessons';
 const DIST_DIR = 'dist';
 const TEMPLATE = readFileSync('template.html', 'utf8');
 
+const durations = loadDurations('assets');
+
 const renderer = new marked.Renderer();
-renderer.image = renderImage;
+renderer.image = (href, title, text) => renderImage(href, title, text, durations);
 renderer.link = (href, title, text) => {
   const titleAttr = title ? ` title="${title}"` : '';
   return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
