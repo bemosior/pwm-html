@@ -98,7 +98,7 @@ test.describe('Cross-section navigation', () => {
 test.describe('Sidebar scroll behavior', () => {
   test('sidebar nav has overflow-y auto', async ({ page }) => {
     await page.goto(firstLesson);
-    const overflowY = await page.locator('.course-nav').evaluate(
+    const overflowY = await page.locator('.nav-scroll').evaluate(
       el => getComputedStyle(el).overflowY
     );
     expect(overflowY).toBe('auto');
@@ -107,7 +107,7 @@ test.describe('Sidebar scroll behavior', () => {
   test('sidebar shows bottom fade when nav content overflows', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 300 });
     await page.goto(firstLesson);
-    const hasFadeBottom = await page.locator('.course-nav').evaluate(
+    const hasFadeBottom = await page.locator('.nav-scroll').evaluate(
       el => el.classList.contains('fade-bottom')
     );
     expect(hasFadeBottom).toBe(true);
@@ -116,10 +116,18 @@ test.describe('Sidebar scroll behavior', () => {
   test('sidebar shows no top fade when scrolled to top', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 300 });
     await page.goto(firstLesson);
-    const hasFadeTop = await page.locator('.course-nav').evaluate(
+    const hasFadeTop = await page.locator('.nav-scroll').evaluate(
       el => el.classList.contains('fade-top')
     );
     expect(hasFadeTop).toBe(false);
+  });
+
+  test('support link stays outside the scrollable nav area', async ({ page }) => {
+    await page.goto(firstLesson);
+    const isInsideScroll = await page.locator('.nav-scroll a[href^="mailto:"]').count();
+    expect(isInsideScroll).toBe(0);
+    const isInFooter = await page.locator('.nav-footer a[href^="mailto:"]').count();
+    expect(isInFooter).toBe(1);
   });
 });
 
