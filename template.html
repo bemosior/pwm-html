@@ -31,10 +31,22 @@
       top: 3rem;
       align-self: start;
       max-height: calc(100vh - 6rem);
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
       font-family: 'Menlo', 'Consolas', monospace;
       font-size: 0.8rem;
       line-height: 1.6;
+    }
+
+    .nav-scroll {
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .nav-footer {
+      flex-shrink: 0;
+      padding-top: 1rem;
     }
 
     .nav-section {
@@ -63,8 +75,8 @@
     .course-nav a:hover { color: #1a1a1a; }
     .course-nav a.active { color: #1a1a1a; font-weight: bold; }
 
-    .course-nav::before,
-    .course-nav::after {
+    .nav-scroll::before,
+    .nav-scroll::after {
       content: '';
       display: block;
       position: sticky;
@@ -77,20 +89,20 @@
       z-index: 1;
     }
 
-    .course-nav::before {
+    .nav-scroll::before {
       top: 0;
       margin-bottom: -2.5rem;
       background: linear-gradient(to bottom, #fafaf8, transparent);
     }
 
-    .course-nav::after {
+    .nav-scroll::after {
       bottom: 0;
       margin-top: -2.5rem;
       background: linear-gradient(to top, #fafaf8, transparent);
     }
 
-    .course-nav.fade-top::before { opacity: 1; }
-    .course-nav.fade-bottom::after { opacity: 1; }
+    .nav-scroll.fade-top::before { opacity: 1; }
+    .nav-scroll.fade-bottom::after { opacity: 1; }
 
     /* ── Mobile header ── */
 
@@ -161,7 +173,6 @@
         max-width: 320px;
         background: #fafaf8;
         padding: 4rem 1.5rem 2rem;
-        overflow-y: auto;
         transform: translateX(-100%);
         transition: transform 0.2s ease;
         z-index: 100;
@@ -324,7 +335,7 @@
     overlay.addEventListener('click', close);
     document.querySelectorAll('.course-nav a').forEach(a => a.addEventListener('click', close));
 
-    const nav = document.querySelector('.course-nav');
+    const nav = document.querySelector('.nav-scroll');
     function updateNavFade() {
       nav.classList.toggle('fade-top', nav.scrollTop > 0);
       nav.classList.toggle('fade-bottom', nav.scrollTop + nav.clientHeight < nav.scrollHeight - 1);

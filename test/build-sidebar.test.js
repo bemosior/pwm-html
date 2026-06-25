@@ -71,6 +71,6 @@ test('output is wrapped in nav.course-nav', () => {
   const l1 = makeLesson('introduction', 'welcome', 'Intro');
   const sections = makeSection('Welcome', [l1]);
   const html = buildSidebar(l1, sections);
-  assert.ok(html.startsWith('<nav class="course-nav">'));
+  assert.ok(html.startsWith('<nav class="course-nav"><div class="nav-scroll">'));
   assert.ok(html.endsWith('</nav>'));
 });
